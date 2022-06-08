@@ -1,4 +1,6 @@
 "use strict";
-module.exports = {
-    mongoURI: 'mongodb://admin:admin@cluster0-shard-00-00.pkz5a.mongodb.net:27017,cluster0-shard-00-01.pkz5a.mongodb.net:27017,cluster0-shard-00-02.pkz5a.mongodb.net:27017/?ssl=true&replicaSet=atlas-5pqq0i-shard-0&authSource=admin&retryWrites=true&w=majority',
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.keys = void 0;
+exports.keys = {
+    mongoURI: 'mongodb+srv://admin:admin@cluster0.pkz5a.mongodb.net/project?retryWrites=true&w=majority',
 };

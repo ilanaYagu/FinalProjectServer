@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import { IEvent } from "../Types/IEvent";
-const EventSchema: Schema = new Schema<IEvent>(
+import { Event } from "../Types/Event";
+const EventSchema: Schema = new Schema<Event>(
   {
     title: {
       type: String,
@@ -38,5 +38,5 @@ const EventSchema: Schema = new Schema<IEvent>(
     }
   }
 );
-const Event = mongoose.model<IEvent>("Event", EventSchema);
+const Event = mongoose.model<Event>("Event", EventSchema);
 export default Event;

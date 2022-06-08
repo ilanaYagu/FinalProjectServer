@@ -23,12 +23,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTask = exports.deleteTask = exports.getTask = exports.getAllTasks = exports.CreateTask = void 0;
+exports.updateTask = exports.deleteTask = exports.getAllTasks = exports.addTask = void 0;
 const Task_1 = __importDefault(require("../Models/Task"));
-const CreateTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const addTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.body.task) {
-            return next(res.status(400).json({ message: "Invalid details provided!" }));
+            return next(res.status(400).json({ message: "Invalid data provided!" }));
         }
         else {
             let _a = req.body.task, { _id } = _a, taskFields = __rest(_a, ["_id"]);
@@ -40,7 +40,7 @@ const CreateTask = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         next(error);
     }
 });
-exports.CreateTask = CreateTask;
+exports.addTask = addTask;
 const getAllTasks = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const getTasks = yield Task_1.default.find();
@@ -56,30 +56,10 @@ const getAllTasks = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getAllTasks = getAllTasks;
-const getTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        if (!req.params._id) {
-            return next(res.status(400).json({ message: "Operation failed, invalid details provided.", }));
-        }
-        else {
-            const getTasks = yield Task_1.default.findById({ _id: req.params._id });
-            if (getTasks) {
-                res.status(200).json(getTasks);
-            }
-            else {
-                return next(res.status(404).json({ message: "Not found." }));
-            }
-        }
-    }
-    catch (error) {
-        next(error);
-    }
-});
-exports.getTask = getTask;
 const deleteTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.body._id) {
-            return next(res.status(400).json({ message: "Operation failed, invalid details provided." }));
+            return next(res.status(400).json({ message: "Operation failed, invalid data provided." }));
         }
         else {
             const deletedTask = yield Task_1.default.findOneAndRemove({ _id: req.body._id });
@@ -98,14 +78,11 @@ const deleteTask = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 exports.deleteTask = deleteTask;
 const updateTask = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        let _b = req.body.task, { _id } = _b, taskFields = __rest(_b, ["_id"]);
         const updatedTask = yield Task_1.default.findOneAndUpdate({
-            _id: req.body.task._id
+            _id: _id
         }, {
-            $set: {
-                title: req.body.task.title, description: req.body.task.description, estimatedTime: req.body.task.estimatedTime,
-                status: req.body.task.status, priority: req.body.task.priority, review: req.body.task.review, timeSpent: req.body.task.timeSpent,
-                untilDate: req.body.task.untilDate
-            }
+            $set: taskFields
         });
         if (updatedTask) {
             res.status(200).json({ task: req.body.task });

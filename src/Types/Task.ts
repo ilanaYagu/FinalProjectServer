@@ -1,6 +1,6 @@
-import { IBasicItem } from "./IBasicitem";
+import { BasicItem } from "./Basicitem";
 
-export interface ITask extends IBasicItem {
+export interface Task extends BasicItem {
   estimatedTime: string;
   status: StatusType;
   priority: PriorityType;

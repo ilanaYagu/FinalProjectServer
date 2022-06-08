@@ -1,6 +1,6 @@
-import { IBasicItem } from "./IBasicitem";
+import { BasicItem } from "./Basicitem";
 
-export interface IEvent extends IBasicItem {
+export interface Event extends BasicItem {
   beginningTime: string;
   endingTime: string;
   color: string;

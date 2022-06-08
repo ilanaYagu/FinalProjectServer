@@ -2,14 +2,12 @@ import { Router } from "express";
 const router: Router = Router();
 import * as EventController from "../Controllers/EventController";
 
-router.post("/add", EventController.CreateEvent);
-
 router.get("/all", EventController.getAllEvents);
 
-router.get("/event-details/:event_id", EventController.getEvent);
+router.post("/add", EventController.addEvent);
 
-router.post("/update-event", EventController.updateEvent);
+router.post("/update", EventController.updateEvent);
 
-router.post("/delete-event", EventController.deleteEvent);
+router.post("/delete", EventController.deleteEvent);
 
 export default router;

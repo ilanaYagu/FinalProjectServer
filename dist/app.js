@@ -14,17 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const Event_1 = __importDefault(require("./Models/Event"));
-const app = (0, express_1.default)();
-const mongoose = require('mongoose');
-const cors = require('cors');
 const EventRoute_1 = __importDefault(require("./Routes/EventRoute"));
 const TaskRoute_1 = __importDefault(require("./Routes/TaskRoute"));
+const socket_io_1 = require("socket.io");
+const mongoose_1 = require("mongoose");
+const cors_1 = __importDefault(require("cors"));
+const keys_1 = require("./keys");
+const app = (0, express_1.default)();
 app.use(express_1.default.json({ type: '*/*' }));
 app.use(express_1.default.urlencoded({ extended: true }));
-app.use(cors());
-const db = require('./keys').mongoURI;
-mongoose
-    .connect(db)
+app.use((0, cors_1.default)());
+(0, mongoose_1.connect)(keys_1.keys.mongoURI)
     .then(() => console.log('MongoDB Connected'))
     .catch((error) => {
     console.log("Unable to connect to the db: " + error.message);
@@ -32,35 +32,11 @@ mongoose
 });
 app.use("/events", EventRoute_1.default);
 app.use("/tasks", TaskRoute_1.default);
-//404 response
-app.use((error, res, next) => {
-    try {
-        res.status(404).send("Resource not found");
-    }
-    catch (error) {
-        next(error);
-    }
-});
-app.use((error, res, next) => {
-    try {
-        const status = error.status || 500;
-        const message = error.message ||
-            "There was an error while processing your request, please try again";
-        return res.status(status).send({
-            status,
-            message,
-        });
-    }
-    catch (error) {
-        next(error);
-    }
-});
-const port = 5000;
+const port = 1025;
 const server = app.listen(port, () => {
     console.log(`Application started on ${port}...`);
 });
-//___________________
-const io = require("socket.io")(server, {
+const io = new socket_io_1.Server(server, {
     pingTimeout: 60000,
     cors: {
         origin: "http://localhost:3000",
@@ -71,19 +47,12 @@ io.on("connection", (socket) => {
     socket.on("sendEventsNotifications", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
             setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
-                const nowDate = getDateAsSavedInDatabase(new Date());
-                console.log(nowDate);
-                try {
-                    const events = yield Event_1.default.find({
-                        notificationTime: nowDate
-                    });
-                    console.log(events);
-                    if (events.length !== 0) {
-                        socket.emit("notification", events);
-                    }
-                }
-                catch (err) {
-                    console.log(err);
+                const currentDate = getDBFormatDate(new Date());
+                console.log(currentDate);
+                let events = yield Event_1.default.find({ notificationTime: currentDate });
+                console.log(events);
+                if (events.length) {
+                    socket.emit("notification", events.map((event) => ({ _id: event._id, title: event.title, description: event.description })));
                 }
             }), 60000);
         }
@@ -95,6 +64,6 @@ io.on("connection", (socket) => {
         console.log('Disconnected');
     });
 });
-const getDateAsSavedInDatabase = (date) => date.getFullYear() + "-" + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+const getDBFormatDate = (date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 const pad = (value) => value < 10 ? '0' + value : value;
 exports.default = app;

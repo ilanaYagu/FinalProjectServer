@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import { ITask } from "../Types/ITask";
-const TaskSchema: Schema = new Schema<ITask>(
+import { Task } from "../Types/Task";
+const TaskSchema: Schema = new Schema<Task>(
   {
     title: {
       type: String,
@@ -36,5 +36,5 @@ const TaskSchema: Schema = new Schema<ITask>(
     }
   }
 );
-const Task = mongoose.model<ITask>("Task", TaskSchema);
+const Task = mongoose.model<Task>("Task", TaskSchema);
 export default Task;

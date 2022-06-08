@@ -23,15 +23,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateEvent = exports.deleteEvent = exports.getEvent = exports.getAllEvents = exports.CreateEvent = void 0;
+exports.updateEvent = exports.deleteEvent = exports.getAllEvents = exports.addEvent = void 0;
 const Event_1 = __importDefault(require("../Models/Event"));
-const CreateEvent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const addEvent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.body.event) {
-            return next(res.status(400).json({ message: "Invalid details provided!" }));
+            return next(res.status(400).json({ message: "Invalid data provided!" }));
         }
         else {
-            let _a = req.body.event, { _id } = _a, eventFields = __rest(_a, ["_id"]);
+            const _a = req.body.event, { _id } = _a, eventFields = __rest(_a, ["_id"]);
             const newEvent = yield new Event_1.default(eventFields).save();
             return res.status(201).json({ event: newEvent });
         }
@@ -40,7 +40,7 @@ const CreateEvent = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         next(error);
     }
 });
-exports.CreateEvent = CreateEvent;
+exports.addEvent = addEvent;
 const getAllEvents = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const getEvents = yield Event_1.default.find();
@@ -56,30 +56,10 @@ const getAllEvents = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getAllEvents = getAllEvents;
-const getEvent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        if (!req.params.eventId) {
-            return next(res.status(400).json({ message: "Operation failed, invalid details provided." }));
-        }
-        else {
-            const getEvents = yield Event_1.default.findById({ _id: req.params.eventId });
-            if (getEvents) {
-                res.status(200).json(getEvents);
-            }
-            else {
-                return next(res.status(404).json({ message: "Not found." }));
-            }
-        }
-    }
-    catch (error) {
-        next(error);
-    }
-});
-exports.getEvent = getEvent;
 const deleteEvent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!req.body._id) {
-            return next(res.status(400).json({ message: "Operation failed, invalid details provided." }));
+            return next(res.status(400).json({ message: "Operation failed, invalid data provided." }));
         }
         else {
             const deletedEvent = yield Event_1.default.findOneAndRemove({ _id: req.body._id });
@@ -98,14 +78,11 @@ const deleteEvent = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
 exports.deleteEvent = deleteEvent;
 const updateEvent = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const _b = req.body.event, { _id } = _b, eventFields = __rest(_b, ["_id"]);
         const updatedEvent = yield Event_1.default.findByIdAndUpdate({
-            _id: req.body.event._id,
+            _id: _id,
         }, {
-            $set: {
-                title: req.body.event.title, description: req.body.event.description, beginningTime: req.body.event.beginningTime,
-                endingTime: req.body.event.endingTime, notificationTime: req.body.event.notificationTime, location: req.body.event.location, color: req.body.event.color,
-                invitedGuests: req.body.event.invitedGuests
-            }
+            $set: eventFields
         });
         if (updatedEvent) {
             res.status(200).json({ event: req.body.event });
