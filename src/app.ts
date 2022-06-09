@@ -36,9 +36,10 @@ const io = new Server(server, {
 
 io.on("connection", (socket: any) => {
   console.log("a user connected");
+  let notificationsIntervalId: NodeJS.Timeout;
   socket.on("sendEventsNotifications", async () => {
     try {
-      setInterval(async () => {
+      notificationsIntervalId = setInterval(async () => {
         const currentDate = getDBFormatDate(new Date());
         console.log(currentDate);
         let events = await Event.find({ notificationTime: currentDate })
@@ -53,6 +54,7 @@ io.on("connection", (socket: any) => {
   });
   socket.on('disconnect', () => {
     console.log('Disconnected');
+    clearInterval(notificationsIntervalId);
   });
 });
 

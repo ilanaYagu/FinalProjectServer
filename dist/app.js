@@ -44,9 +44,10 @@ const io = new socket_io_1.Server(server, {
 });
 io.on("connection", (socket) => {
     console.log("a user connected");
+    let notificationsIntervalId;
     socket.on("sendEventsNotifications", () => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
+            notificationsIntervalId = setInterval(() => __awaiter(void 0, void 0, void 0, function* () {
                 const currentDate = getDBFormatDate(new Date());
                 console.log(currentDate);
                 let events = yield Event_1.default.find({ notificationTime: currentDate });
@@ -62,6 +63,7 @@ io.on("connection", (socket) => {
     }));
     socket.on('disconnect', () => {
         console.log('Disconnected');
+        clearInterval(notificationsIntervalId);
     });
 });
 const getDBFormatDate = (date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
