@@ -47,7 +47,7 @@ const EventSchema = new mongoose_1.Schema({
     },
     location: {
         type: String,
-        required: true
+        required: false
     },
     notificationTime: {
         type: String,

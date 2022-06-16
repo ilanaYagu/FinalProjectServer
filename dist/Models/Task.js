@@ -35,7 +35,7 @@ const TaskSchema = new mongoose_1.Schema({
     },
     estimatedTime: {
         type: String,
-        required: true
+        required: false
     },
     status: {
         type: String,
@@ -47,7 +47,7 @@ const TaskSchema = new mongoose_1.Schema({
     },
     review: {
         type: String,
-        required: true
+        required: false
     },
     timeSpent: {
         type: String,

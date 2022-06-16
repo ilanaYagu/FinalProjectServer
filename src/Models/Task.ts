@@ -12,7 +12,7 @@ const TaskSchema: Schema = new Schema<Task>(
     },
     estimatedTime: {
       type: String,
-      required: true
+      required: false
     },
     status: {
       type: String,
@@ -24,7 +24,7 @@ const TaskSchema: Schema = new Schema<Task>(
     },
     review: {
       type: String,
-      required: true
+      required: false
     },
     timeSpent: {
       type: String,

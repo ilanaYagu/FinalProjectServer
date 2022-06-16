@@ -24,7 +24,7 @@ const EventSchema: Schema = new Schema<Event>(
     },
     location: {
       type: String,
-      required: true
+      required: false
     },
     notificationTime: {
       type: String,
